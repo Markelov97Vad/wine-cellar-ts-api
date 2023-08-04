@@ -38,8 +38,8 @@ const createWine = (req: Request, res: Response) => {
     reiting,
     comment
   }).then(newWine => {
-    Wine.findById(newWine)
-      .populate('owner')
+    Wine.findById(newWine._id)
+      // .populate('owner')
       .then(createdWine => res.status(200).send(createdWine))
       .catch(err => console.log(`Ошибка при поиске вина ${err}`))
   }).catch(err => console.log(`Ошибка при создании вина ${err}`))
