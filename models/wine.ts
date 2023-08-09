@@ -5,7 +5,7 @@ const wineShema = new mongoose.Schema({
     type: String,
     required: true
   },
-  region: {
+  colorWine: {
     type: String,
     required: true
   },
@@ -22,7 +22,7 @@ const wineShema = new mongoose.Schema({
     required: true
   },
   year: {
-    type: Number,
+    type: String,
     required: true
   },
   image: {
