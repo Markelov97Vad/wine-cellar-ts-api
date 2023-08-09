@@ -17,7 +17,7 @@ import { Request, Response } from "express";
 const createWine = (req: Request, res: Response) => {
   const {
     name,
-    region,
+    colorWine,
     grapeVariety,
     country,
     typeWine,
@@ -29,7 +29,7 @@ const createWine = (req: Request, res: Response) => {
 
   Wine.create({
     name,
-    region,
+    colorWine,
     grapeVariety,
     country,
     typeWine,
@@ -40,7 +40,10 @@ const createWine = (req: Request, res: Response) => {
   }).then(newWine => {
     Wine.findById(newWine._id)
       // .populate('owner')
-      .then(createdWine => res.status(200).send(createdWine))
+      .then(createdWine => {
+        console.log('Добавленно вино');
+        res.status(200).send(createdWine)
+      })
       .catch(err => console.log(`Ошибка при поиске вина ${err}`))
   }).catch(err => console.log(`Ошибка при создании вина ${err}`))
 };

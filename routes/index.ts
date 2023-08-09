@@ -3,9 +3,9 @@ import { wineRouter } from './wines';
 
 const router = express.Router();
 
-router.use('/wine', wineRouter);
+router.use('/wines', wineRouter);
 router.use('*', (req, res) => {
-  res.send(404).send({ message: "страница не найдена"})
+  res.status(404).send({ message: "страница не найдена"})
 })
 
 export {

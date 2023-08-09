@@ -1,6 +1,7 @@
 import express, { Express, Request, Response} from "express";
 import mongoose from "mongoose";
 import { router } from "./routes";
+import { cors } from 'cors-ts';
 
 const app = express();
 const PORT = 3000;
@@ -12,18 +13,29 @@ mongoose.connect(DATABASE_URL)
     console.log('\x1b[31m%s\x1b[0m', 'Ошибка в подключении БД');
     console.log(err);
   });
+const ORIGINS = [
+  'http://localhost:3001',
+  'http://localhost:3000'
+];
+const CORS_CONFIG = {
+  origin: ORIGINS,
+  methods: ['GET', 'HEAD', 'PUT', 'PATCH', 'POST', 'DELETE'],
+  preflightContinue: false,
+  optionsSuccessStatus: 204,
+  allowedHeaders: ['Content-Type', 'origin', 'Authorization'],
+  credentials: true,
+};
+
+app.use('*', cors(CORS_CONFIG))
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true}))
 
-app.use(router);
-
 app.get('/', (req, res) => {
   res.send("Ответ получен")
 })
-app.use('*', (req, res) => {
-  res.status(404).send({ message: "страница не найдена"})
-})
+app.use(router);
+
 
 
 app.listen(PORT, () => {
