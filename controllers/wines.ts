@@ -1,19 +1,6 @@
 import Wine from '../models/wine'
 import { Request, Response } from "express";
 
-
-// type wineType = {
-//   name: string;
-//   region: string;
-//   grapeVariety: string;
-//   country: string;
-//   typeWine: string;
-//   year: number;
-//   image: string;
-//   reiting: number;
-//   comment: string;
-// }
-
 const createWine = (req: Request, res: Response) => {
   const {
     name,
@@ -48,6 +35,15 @@ const createWine = (req: Request, res: Response) => {
   }).catch(err => console.log(`Ошибка при создании вина ${err}`))
 };
 
+const getAllWines = (req : Request, res: Response) => {
+  Wine.find({})
+    .then(allWines => {
+      res.status(200).send(allWines)
+    })
+    .catch(err => console.log(`Ошибка при получении списка вин ${err}`))
+}
+
 export {
-  createWine
+  createWine,
+  getAllWines
 };
