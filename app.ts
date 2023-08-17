@@ -4,7 +4,7 @@ import { router } from "./routes";
 import { cors } from 'cors-ts';
 
 const app = express();
-const PORT = 3000;
+const PORT = 3005;
 const DATABASE_URL = 'mongodb://127.0.0.1:27017/winecellardb'
 
 mongoose.connect(DATABASE_URL)
@@ -15,7 +15,8 @@ mongoose.connect(DATABASE_URL)
   });
 const ORIGINS = [
   'http://localhost:3001',
-  'http://localhost:3000'
+  'http://localhost:3000',
+  'https://my-wine-cellar.space'
 ];
 const CORS_CONFIG = {
   origin: ORIGINS,
@@ -35,8 +36,6 @@ app.get('/', (req, res) => {
   res.send("Ответ получен")
 })
 app.use(router);
-
-
 
 app.listen(PORT, () => {
   console.log(`Сервер запущен порт ${PORT}`);

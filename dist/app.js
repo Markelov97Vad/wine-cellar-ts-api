@@ -8,7 +8,7 @@ const mongoose_1 = __importDefault(require("mongoose"));
 const routes_1 = require("./routes");
 const cors_ts_1 = require("cors-ts");
 const app = (0, express_1.default)();
-const PORT = 3000;
+const PORT = 3005;
 const DATABASE_URL = 'mongodb://127.0.0.1:27017/winecellardb';
 mongoose_1.default.connect(DATABASE_URL)
     .then(() => console.log('База данных подключена'))
@@ -18,7 +18,8 @@ mongoose_1.default.connect(DATABASE_URL)
 });
 const ORIGINS = [
     'http://localhost:3001',
-    'http://localhost:3000'
+    'http://localhost:3000',
+    'https://my-wine-cellar.space'
 ];
 const CORS_CONFIG = {
     origin: ORIGINS,
