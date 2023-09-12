@@ -36,6 +36,9 @@ const createWine = (req: Request, res: Response) => {
 };
 
 const getAllWines = (req : Request, res: Response) => {
+
+  console.log(req.params);
+
   Wine.find({})
     .then(allWines => {
       res.status(200).send(allWines)
@@ -45,5 +48,5 @@ const getAllWines = (req : Request, res: Response) => {
 
 export {
   createWine,
-  getAllWines
+  getAllWines,
 };

@@ -2,6 +2,8 @@ import express, { Express, Request, Response} from "express";
 import mongoose from "mongoose";
 import { router } from "./routes";
 import { cors } from 'cors-ts';
+import { log } from "console";
+import { centralizedErrorHandler } from "./middlewares/centralizedErrorHandler";
 
 const app = express();
 const PORT = 3005;
@@ -16,6 +18,7 @@ mongoose.connect(DATABASE_URL)
 const ORIGINS = [
   'http://localhost:3001',
   'http://localhost:3000',
+  'http://localhost:3002',
   'https://my-wine-cellar.space'
 ];
 const CORS_CONFIG = {
@@ -32,10 +35,13 @@ app.use('*', cors(CORS_CONFIG))
 app.use(express.json());
 app.use(express.urlencoded({ extended: true}))
 
-app.get('/', (req, res) => {
-  res.send("Ответ получен")
-})
+// app.get('/wines', (req, res) => {
+//   console.log(req.url, req.method);
+//   // res.send("Ответ получен")
+// })
 app.use(router);
+
+app.use(centralizedErrorHandler);
 
 app.listen(PORT, () => {
   console.log(`Сервер запущен порт ${PORT}`);

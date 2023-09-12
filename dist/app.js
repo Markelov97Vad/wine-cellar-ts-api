@@ -7,6 +7,7 @@ const express_1 = __importDefault(require("express"));
 const mongoose_1 = __importDefault(require("mongoose"));
 const routes_1 = require("./routes");
 const cors_ts_1 = require("cors-ts");
+const centralizedErrorHandler_1 = require("./middlewares/centralizedErrorHandler");
 const app = (0, express_1.default)();
 const PORT = 3005;
 const DATABASE_URL = 'mongodb://127.0.0.1:27017/winecellardb';
@@ -19,6 +20,7 @@ mongoose_1.default.connect(DATABASE_URL)
 const ORIGINS = [
     'http://localhost:3001',
     'http://localhost:3000',
+    'http://localhost:3002',
     'https://my-wine-cellar.space'
 ];
 const CORS_CONFIG = {
@@ -32,10 +34,12 @@ const CORS_CONFIG = {
 app.use('*', (0, cors_ts_1.cors)(CORS_CONFIG));
 app.use(express_1.default.json());
 app.use(express_1.default.urlencoded({ extended: true }));
-app.get('/', (req, res) => {
-    res.send("Ответ получен");
-});
+// app.get('/wines', (req, res) => {
+//   console.log(req.url, req.method);
+//   // res.send("Ответ получен")
+// })
 app.use(routes_1.router);
+app.use(centralizedErrorHandler_1.centralizedErrorHandler);
 app.listen(PORT, () => {
     console.log(`Сервер запущен порт ${PORT}`);
 });
