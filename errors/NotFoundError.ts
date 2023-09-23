@@ -1,4 +1,4 @@
-const { NOT_FOUND_CODE } = require('../ustils/config');
+import { NOT_FOUND_CODE } from "../utils/config";
 
 class NotFoundError extends Error {
   statusCode: number

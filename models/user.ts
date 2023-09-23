@@ -1,5 +1,7 @@
 import mongoose from "mongoose";
-import { regexEmail } from "../utils/config";
+import { UNAUTHORIZED_LOGIN_MESSAGE, regexEmail } from "../utils/config";
+import UnauthorizedError from "../errors/UnauthorizedError";
+import bcrypt from 'bcrypt'
 
 const userShema = new mongoose.Schema({
   nameUser: {
@@ -22,8 +24,27 @@ const userShema = new mongoose.Schema({
   password: {
     type: String,
     required: true,
-    select: false
+    select: false,
   }
-}, { versionKey: false });
+}, {
+  statics: {
+    findUserByCredentails(email, password) {
+      return this.findOne({ email }).select('+password')
+        .then((user) => {
+          if (!user) {
+            throw new UnauthorizedError(UNAUTHORIZED_LOGIN_MESSAGE);
+          } return bcrypt.compare(password, user.password)
+            .then(matched => {
+              console.log(matched);
+
+              if(!matched) {
+                throw new UnauthorizedError(UNAUTHORIZED_LOGIN_MESSAGE)
+              } return user;
+            })
+        });
+    },
+  },
+  versionKey: false
+});
 
 export = mongoose.model('user', userShema);

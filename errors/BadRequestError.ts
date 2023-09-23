@@ -1,6 +1,6 @@
 import { BAD_REQUEST_CODE } from "../utils/config";
 
-class NotFoundError extends Error {
+class BadRequestError extends Error {
   statusCode: number;
   constructor(message: string) {
     super(message);
@@ -8,4 +8,4 @@ class NotFoundError extends Error {
   }
 }
 
-export default NotFoundError;
+export default BadRequestError;

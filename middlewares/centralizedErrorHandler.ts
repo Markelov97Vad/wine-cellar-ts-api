@@ -7,9 +7,15 @@ type ErrorType = {
 }
 
 export const centralizedErrorHandler = (err: ErrorType, req: Request, res: Response, next: NextFunction) => {
+  console.log(err.statusCode);
   if (err.statusCode) {
+    console.log('status erior');
+
     res.status(err.statusCode).send({ message: err.message})
   } else {
+    console.log('servel error');
+
     res.status(SERVER_ERROR_CODE).send({ message: SERVER_ERROR_MESSAGE})
   }
+  return next();
 }

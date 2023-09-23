@@ -2,7 +2,6 @@ import express, { Express, Request, Response} from "express";
 import mongoose from "mongoose";
 import { router } from "./routes";
 import { cors } from 'cors-ts';
-import { log } from "console";
 import { centralizedErrorHandler } from "./middlewares/centralizedErrorHandler";
 
 const app = express();

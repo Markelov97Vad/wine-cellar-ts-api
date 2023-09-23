@@ -1,6 +1,9 @@
-import { Request, Response } from "express";
-import User from "../models/user";
+import { NextFunction, Request, Response } from "express";
 import bcrypt from 'bcrypt';
+import jwt from 'jsonwebtoken';
+import User from "../models/user";
+import { handleError } from "../utils/handleError";
+import { DELETE_MESSAGE, NODE_ENV, checkJWT } from "../utils/config";
 
 interface IRequestBody {
   nameUser: string;
@@ -8,35 +11,59 @@ interface IRequestBody {
   password?: string;
 }
 
-const createUser = (req : Request, res: Response) => {
+export const createUser = (req : Request, res: Response, next: NextFunction) => {
   const { nameUser, email, password } = req.body;
-  console.log(nameUser,email );
-
-
 
   return bcrypt
     .hash(password, 10)
     .then( hash => User.create({
       nameUser,
       email,
-      password
+      password: hash
     })).then(user => {
       const newUser : IRequestBody = user.toObject();
-      // const { password } : Partial<Pick<IRequestBody, 'password'>> = newUser
-      // console.log(password);
       delete newUser.password;
       return res.status(201).send(newUser)
-      // User.findById(newUser._id)
-      // .then(createdUser => {
-      //   console.log('Создан пользватель');
-      //   res.status(201).send(createdUser)
-      // })
-      // .catch(err => console.log(`Ошибка при поиске пользователя ${err}`))
-    }).catch(err => console.log(`Ошибка при создании пользователя ${err}`))
-
-
+    }).catch(err => handleError(err, next))
 };
 
-export {
-  createUser
+export const login = (req: Request, res: Response, next: NextFunction) => {
+  const { email, password } : { email: string, password: string} = req.body;
+  console.log(email, password);
+
+
+  User.findUserByCredentails(email, password)
+    .then( user => {
+      console.log(user);
+
+      const token = jwt.sign(
+        { _id: user._id },
+        checkJWT!,
+        {expiresIn: '7d'}
+      );
+      const newUser: IRequestBody = user.toObject();
+      delete newUser.password;
+      console.log(token);
+      return res.cookie(
+        'jwt',
+        token,
+        {
+          httpOnly: true,
+          secure: NODE_ENV === 'production',
+          sameSite: 'none',
+          maxAge: 3600000 * 24 * 7,
+        }
+      ).send(newUser);
+    })
+    .catch(err =>{
+      console.log(err);
+
+      next(err)
+    })
+}
+
+export const logout = (req: Request, res: Response) => {
+  res
+    .clearCookie('jwt')
+    .send({ message: DELETE_MESSAGE });
 };

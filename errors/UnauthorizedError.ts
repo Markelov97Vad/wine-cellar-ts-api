@@ -1,4 +1,4 @@
-const { UNAUTHORIZED_CODE } = require('../ustils/config');
+import { UNAUTHORIZED_CODE } from "../utils/config";
 
 class UnauthorizedError extends Error {
   statusCode: number

@@ -1,4 +1,4 @@
-const { CONFLICT_CODE } = require('../ustils/config');
+import { CONFLICT_CODE } from "../utils/config";
 
 class ConflictError extends Error {
   statusCode: number

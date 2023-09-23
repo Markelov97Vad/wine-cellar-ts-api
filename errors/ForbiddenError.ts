@@ -1,4 +1,4 @@
-const { FORBIDDEN_CODE } = require('../ustils/config');
+import { FORBIDDEN_CODE } from "../utils/config";
 
 class ForbiddenError extends Error {
   statusCode: number
