@@ -29,7 +29,7 @@ const wineShema = new mongoose.Schema({
     type: String,
     required: true
   },
-  reiting: {
+  rating: {
     type: Number,
     required: false
   },

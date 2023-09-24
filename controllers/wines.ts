@@ -1,7 +1,10 @@
+import NotFoundError from '../errors/NotFoundError';
 import Wine from '../models/wine'
-import { Request, Response } from "express";
+import { NextFunction, Request, Response } from "express";
+import { NOT_FOUND_MESSAGE, OK_CODE } from '../utils/config';
+import { handleError } from '../utils/handleError';
 
-const createWine = (req: Request, res: Response) => {
+const createWine = (req: Request, res: Response, next: NextFunction) => {
   const {
     name,
     colorWine,
@@ -10,7 +13,7 @@ const createWine = (req: Request, res: Response) => {
     typeWine,
     year,
     image,
-    reiting,
+    rating,
     comment
   } = req.body;
 
@@ -22,7 +25,7 @@ const createWine = (req: Request, res: Response) => {
     typeWine,
     year,
     image,
-    reiting,
+    rating,
     comment
   }).then(newWine => {
     Wine.findById(newWine._id)
@@ -31,19 +34,38 @@ const createWine = (req: Request, res: Response) => {
         console.log('Добавленно вино');
         res.status(200).send(createdWine)
       })
-      .catch(err => console.log(`Ошибка при поиске вина ${err}`))
-  }).catch(err => console.log(`Ошибка при создании вина ${err}`))
+      .catch(err => handleError(err, next))
+  }).catch(err => {
+    console.log(`Ошибка при создании вина ${err}`)
+    handleError(err, next)
+  })
 };
 
-const getAllWines = (req : Request, res: Response) => {
+const getAllWines = (req : Request, res: Response, next: NextFunction) => {
+
   Wine.find({})
     .then(allWines => {
       res.status(200).send(allWines)
     })
-    .catch(err => console.log(`Ошибка при получении списка вин ${err}`))
+    .catch(err => handleError(err, next))
+}
+
+const getCurrentWine = (req : Request, res: Response, next: NextFunction) => {
+  const { id } = req.params
+  console.log(id);
+
+  Wine.findById(id)
+    .then((currentWine) => {
+      if (!currentWine) {
+        throw new NotFoundError(NOT_FOUND_MESSAGE);
+      }
+      return res.status(OK_CODE).send(currentWine);
+    })
+    .catch((err) => handleError(err, next))
 }
 
 export {
   createWine,
-  getAllWines
+  getAllWines,
+  getCurrentWine
 };
