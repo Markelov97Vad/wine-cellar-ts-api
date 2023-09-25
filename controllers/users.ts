@@ -3,7 +3,8 @@ import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import User from "../models/user";
 import { handleError } from "../utils/handleError";
-import { DELETE_MESSAGE, NODE_ENV, checkJWT } from "../utils/config";
+import { DELETE_MESSAGE, NODE_ENV, NOT_FOUND_MESSAGE, OK_CODE, checkJWT } from "../utils/config";
+import NotFoundError from "../errors/NotFoundError";
 
 interface IRequestBody {
   nameUser: string;
@@ -50,7 +51,8 @@ export const login = (req: Request, res: Response, next: NextFunction) => {
         {
           httpOnly: true,
           secure: NODE_ENV === 'production',
-          sameSite: 'none',
+          // sameSite: 'none',
+          // secure: true,
           maxAge: 3600000 * 24 * 7,
         }
       ).send(newUser);
@@ -61,6 +63,19 @@ export const login = (req: Request, res: Response, next: NextFunction) => {
       next(err)
     })
 }
+
+export const getCurrentUser = (req: Request, res: Response, next: NextFunction) => {
+  const { _id } = req.user;
+
+  User.findById(_id)
+    .then((user) => {
+      if (!user) {
+        throw new NotFoundError(NOT_FOUND_MESSAGE);
+      }
+      return res.status(OK_CODE).send(user);
+    })
+    .catch((err) => handleError(err, next));
+};
 
 export const logout = (req: Request, res: Response) => {
   res
