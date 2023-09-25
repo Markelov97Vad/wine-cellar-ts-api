@@ -31,12 +31,30 @@ const wineShema = new mongoose.Schema({
   },
   rating: {
     type: Number,
-    required: false
+    required: true
+  },
+  brand: {
+    type: String,
+    required: true
+  },
+  region: {
+    type: String,
+    required: true
   },
   comment: {
     type: String,
     requred: false
-  }
+  },
+  owner: {
+    type: mongoose.Schema.Types.ObjectId,
+    requred: true,
+    ref: 'user'
+  },
+  likes: [{
+    type: mongoose.Schema.Types.ObjectId,
+    default: [],
+    ref: 'user',
+  }]
 }, { versionKey: false});
 
 export = mongoose.model('wine', wineShema);

@@ -1,11 +1,18 @@
 import express from 'express'
-import { createWine, getAllWines, getCurrentWine } from "../controllers/wines";
+import { addWineFromFavorite, createWine, deleteWineFromFavorite, getAllWines, getCurrentWine } from "../controllers/wines";
+import auth from '../middlewares/auth';
+
 
 const wineRouter = express.Router();
 
-wineRouter.post('/', createWine);
 wineRouter.get('/', getAllWines);
 wineRouter.get('/:id', getCurrentWine);
+
+wineRouter.use(auth);
+
+wineRouter.post('/', createWine);
+wineRouter.put('/:wineId/favorite', addWineFromFavorite);
+wineRouter.delete('/:wineId/favorite', deleteWineFromFavorite);
 
 export {
   wineRouter
