@@ -1,9 +1,10 @@
 import NotFoundError from '../errors/NotFoundError';
 import Wine from '../models/wine'
 import { NextFunction, Request, Response } from "express";
-import { BAD_REQUEST_MESSAGE_UPDATE, NOT_FOUND_MESSAGE, OK_CODE } from '../utils/config';
+import { BAD_REQUEST_MESSAGE_UPDATE, CREATED_CODE, NOT_FOUND_MESSAGE, OK_CODE } from '../utils/config';
 import { handleError } from '../utils/handleError';
 import { WineType } from '../types/wine.type';
+import { ObjectId } from 'mongodb';
 
 const createWine = (req: Request, res: Response, next: NextFunction) => {
   const {
@@ -36,10 +37,10 @@ const createWine = (req: Request, res: Response, next: NextFunction) => {
     owner
   }).then(newWine => {
     Wine.findById(newWine._id)
-      // .populate('owner')
+      .populate('owner')
       .then(createdWine => {
         console.log('Добавленно вино');
-        res.status(200).send(createdWine)
+        res.status(CREATED_CODE).send(createdWine)
       })
       .catch(err => handleError(err, next))
   }).catch(err => {
@@ -49,18 +50,20 @@ const createWine = (req: Request, res: Response, next: NextFunction) => {
 };
 
 const getAllWines = (req : Request, res: Response, next: NextFunction) => {
-console.log('Get Wine');
+// console.log('Get Wine');
+// console.log('\x1b[33m%s\x1b[0m',req.params);
 
   Wine.find({})
+    .populate('owner')
     .then(allWines => {
-      res.status(200).send(allWines)
+      res.status(OK_CODE).send(allWines)
     })
     .catch(err => handleError(err, next))
 }
 
 const getCurrentWine = (req : Request, res: Response, next: NextFunction) => {
   const { id } = req.params
-  console.log(id);
+  // console.log(id);
 
   Wine.findById(id)
     .then((currentWine) => {
@@ -72,6 +75,23 @@ const getCurrentWine = (req : Request, res: Response, next: NextFunction) => {
     .catch((err) => handleError(err, next))
 }
 
+const getCurrentUserWine = (req: Request, res: Response, next: NextFunction) => {
+  const { _id }  = req.user;
+  console.log('\x1b[33m%s\x1b[0m',req.user);
+
+
+  Wine.find({owner: req.user._id})
+    .populate('owner')
+    .then(userWines => {
+      if (!userWines) {
+        throw new NotFoundError(NOT_FOUND_MESSAGE);
+      }
+      return res.status(OK_CODE).send(userWines)
+    })
+    .catch(err => handleError(err, next))
+}
+
+
 async function findCardByIdAndUpdate(model: typeof Wine, req: Request, res: Response, options: string, next: NextFunction) {
   try {
     const { wineId } = req.params;
@@ -79,7 +99,7 @@ async function findCardByIdAndUpdate(model: typeof Wine, req: Request, res: Resp
 
     const wine = model.findByIdAndUpdate(
       wineId,
-      { [options]: {likes : id}},
+      { [options]: { likes : id }},
       { new: true }
     ).populate(['owner', 'likes']);
 
@@ -104,6 +124,7 @@ export {
   createWine,
   getAllWines,
   getCurrentWine,
+  getCurrentUserWine,
   addWineFromFavorite,
   deleteWineFromFavorite
 };
