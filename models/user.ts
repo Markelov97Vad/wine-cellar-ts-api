@@ -35,7 +35,7 @@ const userShema = new mongoose.Schema({
             throw new UnauthorizedError(UNAUTHORIZED_LOGIN_MESSAGE);
           } return bcrypt.compare(password, user.password)
             .then(matched => {
-              console.log(matched);
+              // console.log(matched);
 
               if(!matched) {
                 throw new UnauthorizedError(UNAUTHORIZED_LOGIN_MESSAGE)
