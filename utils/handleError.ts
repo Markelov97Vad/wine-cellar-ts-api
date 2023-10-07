@@ -1,8 +1,7 @@
-import { ErrorRequestHandler, NextFunction } from "express"
-import mongoose, { MongooseError } from "mongoose"
-import { BAD_REQUEST_CODE, BAD_REQUEST_MESSAGE, CONFLICT_MESSAGE } from "./config";
+import { NextFunction } from "express"
+import mongoose from "mongoose"
+import { BAD_REQUEST_MESSAGE, CONFLICT_MESSAGE } from "./config";
 import ConflictError from '../errors/ConflictError';
-import { ErrorCallback } from "typescript";
 import { MongoError } from 'mongodb';
 import BadRequestError from "../errors/BadRequestError";
 

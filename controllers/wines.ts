@@ -77,10 +77,8 @@ const getCurrentWine = (req : Request, res: Response, next: NextFunction) => {
 
 const getCurrentUserWine = (req: Request, res: Response, next: NextFunction) => {
   const { _id }  = req.user;
-  console.log('\x1b[33m%s\x1b[0m',req.user);
 
-
-  Wine.find({owner: req.user._id})
+  Wine.find({owner: _id})
     .populate('owner')
     .then(userWines => {
       if (!userWines) {
@@ -92,33 +90,81 @@ const getCurrentUserWine = (req: Request, res: Response, next: NextFunction) => 
 }
 
 
-async function findCardByIdAndUpdate(model: typeof Wine, req: Request, res: Response, options: string, next: NextFunction) {
-  try {
-    const { wineId } = req.params;
-    const { id } = req.user;
+// async function findCardByIdAndUpdate(model: typeof Wine, req: Request, res: Response, options: string, next: NextFunction) {
+//   try {
+//     const { wineId } = req.params;
+//     const { _id } = req.user;
 
-    const wine = model.findByIdAndUpdate(
-      wineId,
-      { [options]: { likes : id }},
-      { new: true }
-    ).populate(['owner', 'likes']);
+//     const wine = model.findByIdAndUpdate(
+//       {_id: wineId},
+//       { [options]: { likes : _id }},
+//       { new: true }
+//     ).populate(['owner', 'likes']);
 
+//     console.log('ОШИБКА');
+//     // console.log(wine);
+
+//     if(!wine) {
+//       console.log('ОШИБКА');
+
+//       throw new NotFoundError(BAD_REQUEST_MESSAGE_UPDATE);
+//     }
+//     return res.status(OK_CODE).send(wine);
+
+//   } catch(err: any) {
+//     return handleError(err, next);
+//   }
+// }
+
+// const addWineFromFavorite = (req : Request, res: Response, next: NextFunction) => {
+//   findCardByIdAndUpdate(Wine, req, res, '$addToSet', next);
+// }
+// const deleteWineFromFavorite = (req : Request, res: Response, next: NextFunction) => {
+//   findCardByIdAndUpdate(Wine, req, res, '$pull', next);
+// }
+
+const addWineFromFavorite = (req: Request, res: Response, next: NextFunction) => {
+  const { wineId } = req.params;
+  const { _id } = req.user;
+
+  Wine.findByIdAndUpdate(
+    {_id: wineId},
+    { '$addToSet': { likes : _id }},
+    { new: true }
+  )
+  .populate(['owner', 'likes'])
+  .then( wine => {
     if(!wine) {
+      console.log('ОШИБКА');
+
       throw new NotFoundError(BAD_REQUEST_MESSAGE_UPDATE);
     }
-    return res.status(OK_CODE).send(wine);
+    return res.status(OK_CODE).send(wine)
+  })
+  .catch(err => handleError(err, next));
+}
+const deleteWineFromFavorite = (req: Request, res: Response, next: NextFunction) => {
+  const { wineId } = req.params;
+  const { _id } = req.user;
 
-  } catch(err: any) {
-    return handleError(err, next);
-  }
+  Wine.findByIdAndUpdate(
+    {_id: wineId},
+    { '$pull': { likes : _id }},
+    { new: true }
+  )
+  .populate(['owner', 'likes'])
+  .then( wine => {
+    if(!wine) {
+      console.log('ОШИБКА');
+
+      throw new NotFoundError(BAD_REQUEST_MESSAGE_UPDATE);
+    }
+    return res.status(OK_CODE).send(wine)
+  })
+  .catch(err => handleError(err, next));
 }
 
-const addWineFromFavorite = (req : Request, res: Response, next: NextFunction) => {
-  findCardByIdAndUpdate(Wine, req, res, '$addToSet', next);
-}
-const deleteWineFromFavorite = (req : Request, res: Response, next: NextFunction) => {
-  findCardByIdAndUpdate(Wine, req, res, '$pull', next);
-}
+
 
 export {
   createWine,
