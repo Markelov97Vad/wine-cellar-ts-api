@@ -27,7 +27,8 @@ const wineShema = new mongoose.Schema({
   },
   image: {
     type: String,
-    required: true
+    required: false,
+    default: 'https://p0.pxfuel.com/preview/569/587/724/bottle-wine-red-drink.jpg'
   },
   rating: {
     type: Number,

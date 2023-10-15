@@ -6,6 +6,7 @@ import {
   getAllWines,
   getCurrentUserWine,
   getCurrentWine,
+  getFavoriteWine,
 } from "../controllers/wines";
 import auth from "../middlewares/auth";
 
@@ -17,6 +18,7 @@ wineRouter.use(auth);
 
 wineRouter.post("/", createWine);
 wineRouter.get("/my", getCurrentUserWine);
+wineRouter.get('/favorite', getFavoriteWine);
 wineRouter.put("/favorite/:wineId/", addWineFromFavorite);
 wineRouter.delete("/favorite/:wineId", deleteWineFromFavorite);
 

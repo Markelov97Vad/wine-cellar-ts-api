@@ -79,7 +79,7 @@ const getCurrentUserWine = (req: Request, res: Response, next: NextFunction) => 
   const { _id }  = req.user;
 
   Wine.find({owner: _id})
-    .populate('owner')
+    .populate('owner', 'likes')
     .then(userWines => {
       if (!userWines) {
         throw new NotFoundError(NOT_FOUND_MESSAGE);
@@ -88,6 +88,33 @@ const getCurrentUserWine = (req: Request, res: Response, next: NextFunction) => 
     })
     .catch(err => handleError(err, next))
 }
+
+const getFavoriteWine = (req: Request, res: Response, next: NextFunction) => {
+  const { _id }  = req.user;
+
+  Wine.find({likes: _id })
+    .populate('owner', 'likes')
+    .then(favoriteWines => {
+      if (!favoriteWines) {
+        throw new NotFoundError(NOT_FOUND_MESSAGE);
+      }
+      return res.status(OK_CODE).send(favoriteWines)
+    })
+    .catch(err => handleError(err, next));
+}
+// const getFavoriteWine = (req: Request, res: Response, next: NextFunction) => {
+//   const { _id }  = req.user;
+
+//   Wine.find({likes: _id})
+//     .populate('owner')
+//     .then(favoriteWine => {
+//       if (!favoriteWine) {
+//         throw new NotFoundError(NOT_FOUND_MESSAGE);
+//       }
+//       return res.status(OK_CODE).send(favoriteWine)
+//     })
+//     .catch(err => handleError(err, next))
+// }
 
 
 // async function findCardByIdAndUpdate(model: typeof Wine, req: Request, res: Response, options: string, next: NextFunction) {
@@ -135,8 +162,6 @@ const addWineFromFavorite = (req: Request, res: Response, next: NextFunction) =>
   .populate(['owner', 'likes'])
   .then( wine => {
     if(!wine) {
-      console.log('ОШИБКА');
-
       throw new NotFoundError(BAD_REQUEST_MESSAGE_UPDATE);
     }
     return res.status(OK_CODE).send(wine)
@@ -155,8 +180,6 @@ const deleteWineFromFavorite = (req: Request, res: Response, next: NextFunction)
   .populate(['owner', 'likes'])
   .then( wine => {
     if(!wine) {
-      console.log('ОШИБКА');
-
       throw new NotFoundError(BAD_REQUEST_MESSAGE_UPDATE);
     }
     return res.status(OK_CODE).send(wine)
@@ -164,13 +187,12 @@ const deleteWineFromFavorite = (req: Request, res: Response, next: NextFunction)
   .catch(err => handleError(err, next));
 }
 
-
-
 export {
   createWine,
   getAllWines,
   getCurrentWine,
   getCurrentUserWine,
   addWineFromFavorite,
-  deleteWineFromFavorite
+  deleteWineFromFavorite,
+  getFavoriteWine
 };
