@@ -10,6 +10,11 @@ const userShema = new mongoose.Schema({
     minlength: 2,
     maxlength: 30
   },
+  surname: {
+    type: String,
+    required: false,
+    maxlength: 30,
+  },
   email: {
     type: String,
     unique: true,

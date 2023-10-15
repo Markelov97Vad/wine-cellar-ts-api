@@ -66,6 +66,8 @@ export const login = (req: Request, res: Response, next: NextFunction) => {
 
 export const getCurrentUser = (req: Request, res: Response, next: NextFunction) => {
   const { _id } = req.user;
+  console.log('user id',_id);
+
 
   User.findById(_id)
     .then((user) => {
@@ -82,3 +84,22 @@ export const logout = (req: Request, res: Response) => {
     .clearCookie('jwt')
     .send({ message: DELETE_MESSAGE });
 };
+
+export const setUserInfo = (req: Request, res: Response, next: NextFunction) => {
+  const { _id } = req.user;
+  const { nameUser , email, surname } = req.body;
+
+  User
+    .findByIdAndUpdate(
+      _id,
+      {nameUser, email, surname},
+      {new: true, runValidators: true}
+    )
+    .then(user => {
+      if (!user) {
+        return new NotFoundError(NOT_FOUND_MESSAGE);
+      }
+      return res.status(OK_CODE).send(user)
+    })
+    .catch(err => handleError(err, next))
+}
