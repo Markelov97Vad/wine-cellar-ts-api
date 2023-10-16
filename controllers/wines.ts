@@ -1,10 +1,11 @@
 import NotFoundError from '../errors/NotFoundError';
 import Wine from '../models/wine'
 import { NextFunction, Request, Response } from "express";
-import { BAD_REQUEST_MESSAGE_UPDATE, CREATED_CODE, NOT_FOUND_MESSAGE, OK_CODE } from '../utils/config';
+import { BAD_REQUEST_MESSAGE_UPDATE, CREATED_CODE, DELETE_MESSAGE, FORBIDDEN_MESSAGE, NOT_FOUND_MESSAGE, OK_CODE } from '../utils/config';
 import { handleError } from '../utils/handleError';
 import { WineType } from '../types/wine.type';
 import { ObjectId } from 'mongodb';
+import ForbiddenError from '../errors/ForbiddenError';
 
 const createWine = (req: Request, res: Response, next: NextFunction) => {
   const {
@@ -66,6 +67,7 @@ const getCurrentWine = (req : Request, res: Response, next: NextFunction) => {
   // console.log(id);
 
   Wine.findById(id)
+    .populate('owner')
     .then((currentWine) => {
       if (!currentWine) {
         throw new NotFoundError(NOT_FOUND_MESSAGE);
@@ -187,6 +189,28 @@ const deleteWineFromFavorite = (req: Request, res: Response, next: NextFunction)
   .catch(err => handleError(err, next));
 }
 
+const deleteWine = (req: Request, res: Response, next: NextFunction) => {
+  const { _id } = req.user;
+  const { wineId } = req.params;
+
+  Wine
+    .findById(wineId)
+    .then(wine => {
+      if (!wine) {
+        throw new NotFoundError(NOT_FOUND_MESSAGE);
+      }
+      console.log(wine.owner);
+
+      if (_id !== wine.owner?.valueOf()) {
+        throw new ForbiddenError(FORBIDDEN_MESSAGE)
+      }
+      return wine.deleteOne();
+    })
+    .then(() => res.status(OK_CODE).send({ message: DELETE_MESSAGE}))
+    .catch(err => handleError(err, next));
+
+}
+
 export {
   createWine,
   getAllWines,
@@ -194,5 +218,6 @@ export {
   getCurrentUserWine,
   addWineFromFavorite,
   deleteWineFromFavorite,
-  getFavoriteWine
+  getFavoriteWine,
+  deleteWine
 };
