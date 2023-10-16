@@ -51,21 +51,17 @@ const createWine = (req: Request, res: Response, next: NextFunction) => {
 };
 
 const getAllWines = (req : Request, res: Response, next: NextFunction) => {
-// console.log('Get Wine');
-// console.log('\x1b[33m%s\x1b[0m',req.params);
-
   Wine.find({})
     .populate('owner')
     .then(allWines => {
-      res.status(OK_CODE).send(allWines)
+      res.status(OK_CODE).send(allWines.reverse())
     })
     .catch(err => handleError(err, next))
 }
 
 const getCurrentWine = (req : Request, res: Response, next: NextFunction) => {
-  const { id } = req.params
-  // console.log(id);
-
+  const { id } = req.params;
+  
   Wine.findById(id)
     .populate('owner')
     .then((currentWine) => {
@@ -86,7 +82,7 @@ const getCurrentUserWine = (req: Request, res: Response, next: NextFunction) => 
       if (!userWines) {
         throw new NotFoundError(NOT_FOUND_MESSAGE);
       }
-      return res.status(OK_CODE).send(userWines)
+      return res.status(OK_CODE).send(userWines.reverse())
     })
     .catch(err => handleError(err, next))
 }
