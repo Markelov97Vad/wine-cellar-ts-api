@@ -87,7 +87,12 @@ export const logout = (req: Request, res: Response) => {
 
 export const setUserInfo = (req: Request, res: Response, next: NextFunction) => {
   const { _id } = req.user;
-  const { nameUser , email, surname } = req.body;
+  const { nameUser , email, surname } :
+  {
+    nameUser: string,
+    email: string,
+    surname: string
+  } = req.body;
 
   User
     .findByIdAndUpdate(
