@@ -7,7 +7,7 @@ import { WineType } from '../types/wine.type';
 import { ObjectId } from 'mongodb';
 import ForbiddenError from '../errors/ForbiddenError';
 
-const createWine = (req: Request, res: Response, next: NextFunction) => {
+export const createWine = (req: Request, res: Response, next: NextFunction) => {
   const {
     name,
     colorWine,
@@ -50,21 +50,17 @@ const createWine = (req: Request, res: Response, next: NextFunction) => {
   })
 };
 
-const getAllWines = (req : Request, res: Response, next: NextFunction) => {
-// console.log('Get Wine');
-// console.log('\x1b[33m%s\x1b[0m',req.params);
-
+export const getAllWines = (req : Request, res: Response, next: NextFunction) => {
   Wine.find({})
     .populate('owner')
     .then(allWines => {
-      res.status(OK_CODE).send(allWines)
+      res.status(OK_CODE).send(allWines.reverse())
     })
     .catch(err => handleError(err, next))
 }
 
-const getCurrentWine = (req : Request, res: Response, next: NextFunction) => {
-  const { id } = req.params
-  // console.log(id);
+export const getCurrentWine = (req : Request, res: Response, next: NextFunction) => {
+  const { id } = req.params;
 
   Wine.findById(id)
     .populate('owner')
@@ -77,7 +73,7 @@ const getCurrentWine = (req : Request, res: Response, next: NextFunction) => {
     .catch((err) => handleError(err, next))
 }
 
-const getCurrentUserWine = (req: Request, res: Response, next: NextFunction) => {
+export const getCurrentUserWine = (req: Request, res: Response, next: NextFunction) => {
   const { _id }  = req.user;
 
   Wine.find({owner: _id})
@@ -86,12 +82,12 @@ const getCurrentUserWine = (req: Request, res: Response, next: NextFunction) => 
       if (!userWines) {
         throw new NotFoundError(NOT_FOUND_MESSAGE);
       }
-      return res.status(OK_CODE).send(userWines)
+      return res.status(OK_CODE).send(userWines.reverse())
     })
     .catch(err => handleError(err, next))
 }
 
-const getFavoriteWine = (req: Request, res: Response, next: NextFunction) => {
+export const getFavoriteWine = (req: Request, res: Response, next: NextFunction) => {
   const { _id }  = req.user;
 
   Wine.find({likes: _id })
@@ -152,7 +148,7 @@ const getFavoriteWine = (req: Request, res: Response, next: NextFunction) => {
 //   findCardByIdAndUpdate(Wine, req, res, '$pull', next);
 // }
 
-const addWineFromFavorite = (req: Request, res: Response, next: NextFunction) => {
+export const addWineFromFavorite = (req: Request, res: Response, next: NextFunction) => {
   const { wineId } = req.params;
   const { _id } = req.user;
 
@@ -170,7 +166,8 @@ const addWineFromFavorite = (req: Request, res: Response, next: NextFunction) =>
   })
   .catch(err => handleError(err, next));
 }
-const deleteWineFromFavorite = (req: Request, res: Response, next: NextFunction) => {
+
+export const deleteWineFromFavorite = (req: Request, res: Response, next: NextFunction) => {
   const { wineId } = req.params;
   const { _id } = req.user;
 
@@ -189,7 +186,7 @@ const deleteWineFromFavorite = (req: Request, res: Response, next: NextFunction)
   .catch(err => handleError(err, next));
 }
 
-const deleteWine = (req: Request, res: Response, next: NextFunction) => {
+export const deleteWine = (req: Request, res: Response, next: NextFunction) => {
   const { _id } = req.user;
   const { wineId } = req.params;
 
@@ -208,16 +205,22 @@ const deleteWine = (req: Request, res: Response, next: NextFunction) => {
     })
     .then(() => res.status(OK_CODE).send({ message: DELETE_MESSAGE}))
     .catch(err => handleError(err, next));
-
 }
 
-export {
-  createWine,
-  getAllWines,
-  getCurrentWine,
-  getCurrentUserWine,
-  addWineFromFavorite,
-  deleteWineFromFavorite,
-  getFavoriteWine,
-  deleteWine
-};
+export const setWineInfo = (req: Request, res: Response, next: NextFunction) => {
+  const { id } = req.params;
+  const { image } : { image: string} = req.body;
+  Wine
+    .findByIdAndUpdate(
+      id,
+      {image},
+      {new: true, runValidators: true}
+    )
+    .then(wine => {
+      if(!wine) {
+        return new NotFoundError(NOT_FOUND_MESSAGE);
+      }
+      return res.status(OK_CODE).send(wine);
+    })
+    .catch(err => handleError(err, next))
+}
