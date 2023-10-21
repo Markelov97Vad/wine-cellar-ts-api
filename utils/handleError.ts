@@ -11,9 +11,7 @@ import BadRequestError from "../errors/BadRequestError";
 
 export const handleError = (err : MongoError, next: NextFunction) => {
   console.log('Ошибка',err);
-
   if (err instanceof mongoose.Error.CastError) {
-    console.log('место ошибки',err);
     return next(new BadRequestError(BAD_REQUEST_MESSAGE))
   }
   if (err instanceof mongoose.Error.ValidationError) {

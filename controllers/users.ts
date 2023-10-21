@@ -3,7 +3,7 @@ import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import User from "../models/user";
 import { handleError } from "../utils/handleError";
-import { DELETE_MESSAGE, NODE_ENV, NOT_FOUND_MESSAGE, OK_CODE, checkJWT } from "../utils/config";
+import { DELETE_MESSAGE, NOT_FOUND_MESSAGE, OK_CODE, checkJWT } from "../utils/config";
 import NotFoundError from "../errors/NotFoundError";
 
 interface IRequestBody {
@@ -11,6 +11,8 @@ interface IRequestBody {
   email: string;
   password?: string;
 }
+
+const { NODE_ENV } = process.env;
 
 export const createUser = (req : Request, res: Response, next: NextFunction) => {
   const { nameUser, email, password } = req.body;
@@ -30,13 +32,9 @@ export const createUser = (req : Request, res: Response, next: NextFunction) => 
 
 export const login = (req: Request, res: Response, next: NextFunction) => {
   const { email, password } : { email: string, password: string} = req.body;
-  console.log(email, password);
-
 
   User.findUserByCredentails(email, password)
     .then( user => {
-      console.log(user);
-
       const token = jwt.sign(
         { _id: user._id },
         checkJWT!,
@@ -44,30 +42,24 @@ export const login = (req: Request, res: Response, next: NextFunction) => {
       );
       const newUser: IRequestBody = user.toObject();
       delete newUser.password;
-      console.log(token);
       return res.cookie(
         'jwt',
         token,
         {
           httpOnly: true,
-          secure: NODE_ENV === 'production',
-          // sameSite: 'none',
-          // secure: true,
+          // secure: NODE_ENV === 'production',
+          sameSite: 'none',
+          secure: true,
           maxAge: 3600000 * 24 * 7,
         }
       ).send(newUser);
     })
-    .catch(err =>{
-      console.log(err);
-
-      next(err)
-    })
+    .catch(err => handleError(err, next))
 }
+console.log(NODE_ENV === 'production');
 
 export const getCurrentUser = (req: Request, res: Response, next: NextFunction) => {
   const { _id } = req.user;
-  console.log('user id',_id);
-
 
   User.findById(_id)
     .then((user) => {
