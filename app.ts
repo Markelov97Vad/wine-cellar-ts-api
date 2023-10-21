@@ -1,11 +1,9 @@
-import express, { Express, Request, Response} from "express";
+import express from "express";
 import mongoose from "mongoose";
 import { cors } from 'cors-ts';
 import cookieParser from 'cookie-parser';
 import { centralizedErrorHandler } from "./middlewares/centralizedErrorHandler";
 import { router } from "./routes";
-import productionJwtCheck from "./utils/productionJwtCheck";
-import auth from "./middlewares/auth";
 
 const app = express();
 const PORT = 3005;
@@ -39,12 +37,7 @@ app.use(express.urlencoded({ extended: true}))
 
 app.use(cookieParser());
 
-// app.get('/wines', (req, res) => {
-//   console.log(req.url, req.method);
-//   // res.send("Ответ получен")
-// })
 app.use(router);
-// app.use(auth);
 
 app.use(centralizedErrorHandler);
 

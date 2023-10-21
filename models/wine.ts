@@ -10,7 +10,8 @@ const wineShema = new mongoose.Schema({
     required: true
   },
   grapeVariety: {
-    type: String,
+    type: [String],
+    default: [],
     required: true
   },
   country: {

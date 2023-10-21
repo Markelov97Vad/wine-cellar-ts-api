@@ -30,13 +30,9 @@ export const createUser = (req : Request, res: Response, next: NextFunction) => 
 
 export const login = (req: Request, res: Response, next: NextFunction) => {
   const { email, password } : { email: string, password: string} = req.body;
-  console.log(email, password);
-
 
   User.findUserByCredentails(email, password)
     .then( user => {
-      console.log(user);
-
       const token = jwt.sign(
         { _id: user._id },
         checkJWT!,
@@ -44,7 +40,6 @@ export const login = (req: Request, res: Response, next: NextFunction) => {
       );
       const newUser: IRequestBody = user.toObject();
       delete newUser.password;
-      console.log(token);
       return res.cookie(
         'jwt',
         token,
@@ -57,17 +52,11 @@ export const login = (req: Request, res: Response, next: NextFunction) => {
         }
       ).send(newUser);
     })
-    .catch(err =>{
-      console.log(err);
-
-      next(err)
-    })
+    .catch(err => handleError(err, next))
 }
 
 export const getCurrentUser = (req: Request, res: Response, next: NextFunction) => {
   const { _id } = req.user;
-  console.log('user id',_id);
-
 
   User.findById(_id)
     .then((user) => {

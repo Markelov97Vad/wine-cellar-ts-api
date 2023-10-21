@@ -36,12 +36,7 @@ app.use('*', (0, cors_ts_1.cors)(CORS_CONFIG));
 app.use(express_1.default.json());
 app.use(express_1.default.urlencoded({ extended: true }));
 app.use((0, cookie_parser_1.default)());
-// app.get('/wines', (req, res) => {
-//   console.log(req.url, req.method);
-//   // res.send("Ответ получен")
-// })
 app.use(routes_1.router);
-// app.use(auth);
 app.use(centralizedErrorHandler_1.centralizedErrorHandler);
 app.listen(PORT, () => {
     if (process.env.NODE_ENV !== 'production') {
