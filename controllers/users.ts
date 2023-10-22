@@ -42,15 +42,16 @@ export const login = (req: Request, res: Response, next: NextFunction) => {
       );
       const newUser: IRequestBody = user.toObject();
       delete newUser.password;
-      return res.cookie(
-        'jwt',
-        token,
-        {
-          httpOnly: true,
-          sameSite: 'none',
-          secure: NODE_ENV === 'production',
-          maxAge: 3600000 * 24 * 7,
-        }
+      return res.status(OK_CODE
+      // return res.cookie(
+      //   'jwt',
+      //   token,
+      //   {
+      //     httpOnly: true,
+      //     sameSite: 'none',
+      //     secure: NODE_ENV === 'production',
+      //     maxAge: 3600000 * 24 * 7,
+      //   }
       ).send({newUser, token});
     })
     .catch(err => handleError(err, next))
