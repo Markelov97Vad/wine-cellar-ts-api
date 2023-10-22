@@ -47,9 +47,8 @@ export const login = (req: Request, res: Response, next: NextFunction) => {
         token,
         {
           httpOnly: true,
-          // secure: NODE_ENV === 'production',
-          sameSite: 'none',
-          secure: true,
+          secure: NODE_ENV === 'production',
+          sameSite: 'strict',
           maxAge: 3600000 * 24 * 7,
         }
       ).send(newUser);
