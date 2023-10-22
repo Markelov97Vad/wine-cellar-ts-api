@@ -59,6 +59,8 @@ export const login = (req: Request, res: Response, next: NextFunction) => {
 
 export const getCurrentUser = (req: Request, res: Response, next: NextFunction) => {
   const { _id } = req.user;
+  console.log('id',_id);
+
 
   User.findById(_id)
     .then((user) => {

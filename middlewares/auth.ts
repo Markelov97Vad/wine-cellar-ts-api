@@ -6,6 +6,8 @@ import { UNAUTHORIZED_AUTH_MESSAGE, checkJWT } from "../utils/config";
 
 const auth = (req: any, res: Response, next: NextFunction) => {
   const token = req.cookies.jwt;
+  console.log('token',token);
+
 
   if(!token) {
     return next(new UnauthorizedError(UNAUTHORIZED_AUTH_MESSAGE));
@@ -17,6 +19,7 @@ const auth = (req: any, res: Response, next: NextFunction) => {
     return next(new UnauthorizedError(UNAUTHORIZED_AUTH_MESSAGE))
   }
   req.user = payload;
+  console.log('req.user',payload);
 
   return next();
 };
