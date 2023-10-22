@@ -38,7 +38,7 @@ export const login = (req: Request, res: Response, next: NextFunction) => {
       const token = jwt.sign(
         { _id: user._id },
         checkJWT!,
-        {expiresIn: '7d'}
+        {expiresIn: '20d'}
       );
       const newUser: IRequestBody = user.toObject();
       delete newUser.password;
@@ -47,15 +47,14 @@ export const login = (req: Request, res: Response, next: NextFunction) => {
         token,
         {
           httpOnly: true,
+          sameSite: 'none',
           secure: NODE_ENV === 'production',
-          sameSite: 'strict',
           maxAge: 3600000 * 24 * 7,
         }
-      ).send(newUser);
+      ).send({newUser, token});
     })
     .catch(err => handleError(err, next))
 }
-console.log(NODE_ENV === 'production');
 
 export const getCurrentUser = (req: Request, res: Response, next: NextFunction) => {
   const { _id } = req.user;

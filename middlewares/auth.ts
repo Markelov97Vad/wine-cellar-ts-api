@@ -6,6 +6,7 @@ import { UNAUTHORIZED_AUTH_MESSAGE, checkJWT } from "../utils/config";
 
 const auth = (req: any, res: Response, next: NextFunction) => {
   const token = req.cookies.jwt;
+
   if(!token) {
     return next(new UnauthorizedError(UNAUTHORIZED_AUTH_MESSAGE));
   }
