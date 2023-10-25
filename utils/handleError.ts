@@ -5,12 +5,7 @@ import ConflictError from '../errors/ConflictError';
 import { MongoError } from 'mongodb';
 import BadRequestError from "../errors/BadRequestError";
 
-// interface err {
-//   code: number
-// }
-
 export const handleError = (err : MongoError, next: NextFunction) => {
-  console.log('Ошибка',err);
   if (err instanceof mongoose.Error.CastError) {
     return next(new BadRequestError(BAD_REQUEST_MESSAGE))
   }

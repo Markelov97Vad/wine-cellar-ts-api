@@ -12,6 +12,7 @@ const centralizedErrorHandler_1 = require("./middlewares/centralizedErrorHandler
 const routes_1 = require("./routes");
 const productionJwtCheck_1 = __importDefault(require("./utils/productionJwtCheck"));
 const app = (0, express_1.default)();
+app.use((0, cookie_parser_1.default)());
 const PORT = 3005;
 const DATABASE_URL = 'mongodb://127.0.0.1:27017/winecellardb';
 mongoose_1.default.connect(DATABASE_URL)
@@ -37,7 +38,6 @@ const CORS_CONFIG = {
 app.use('*', (0, cors_ts_1.cors)(CORS_CONFIG));
 app.use(express_1.default.json());
 app.use(express_1.default.urlencoded({ extended: true }));
-app.use((0, cookie_parser_1.default)());
 app.use(routes_1.router);
 app.use(centralizedErrorHandler_1.centralizedErrorHandler);
 app.listen(PORT, () => {

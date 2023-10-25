@@ -1,5 +1,5 @@
 export const regexUrl = /(http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-/]))?/;
-export const regexEmail = /^\S+@\S+\.\S+$/;
+export const regexEmail = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
 export const { NODE_ENV, JWT_SECRET } = process.env
 export const JWT_SECRET_DEV = 'some-secret-key';
 export const checkJWT = NODE_ENV === 'production' ? JWT_SECRET : JWT_SECRET_DEV;

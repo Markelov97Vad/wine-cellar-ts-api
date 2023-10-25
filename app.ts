@@ -8,6 +8,9 @@ import { router } from "./routes";
 import productionJwtCheck from "./utils/productionJwtCheck";
 
 const app = express();
+
+app.use(cookieParser());
+
 const PORT = 3005;
 const DATABASE_URL = 'mongodb://127.0.0.1:27017/winecellardb'
 
@@ -37,7 +40,6 @@ app.use('*', cors(CORS_CONFIG))
 app.use(express.json());
 app.use(express.urlencoded({ extended: true}))
 
-app.use(cookieParser());
 
 app.use(router);
 

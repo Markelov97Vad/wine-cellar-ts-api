@@ -4,7 +4,6 @@ import { NextFunction, Request, Response } from "express";
 import { BAD_REQUEST_MESSAGE_UPDATE, CREATED_CODE, DELETE_MESSAGE, FORBIDDEN_MESSAGE, NOT_FOUND_MESSAGE, OK_CODE } from '../utils/config';
 import { handleError } from '../utils/handleError';
 import { WineType } from '../types/wine.type';
-import { ObjectId } from 'mongodb';
 import ForbiddenError from '../errors/ForbiddenError';
 
 export const createWine = (req: Request, res: Response, next: NextFunction) => {
@@ -100,53 +99,6 @@ export const getFavoriteWine = (req: Request, res: Response, next: NextFunction)
     })
     .catch(err => handleError(err, next));
 }
-// const getFavoriteWine = (req: Request, res: Response, next: NextFunction) => {
-//   const { _id }  = req.user;
-
-//   Wine.find({likes: _id})
-//     .populate('owner')
-//     .then(favoriteWine => {
-//       if (!favoriteWine) {
-//         throw new NotFoundError(NOT_FOUND_MESSAGE);
-//       }
-//       return res.status(OK_CODE).send(favoriteWine)
-//     })
-//     .catch(err => handleError(err, next))
-// }
-
-
-// async function findCardByIdAndUpdate(model: typeof Wine, req: Request, res: Response, options: string, next: NextFunction) {
-//   try {
-//     const { wineId } = req.params;
-//     const { _id } = req.user;
-
-//     const wine = model.findByIdAndUpdate(
-//       {_id: wineId},
-//       { [options]: { likes : _id }},
-//       { new: true }
-//     ).populate(['owner', 'likes']);
-
-//     console.log('ОШИБКА');
-//     // console.log(wine);
-
-//     if(!wine) {
-//       console.log('ОШИБКА');
-
-//       throw new NotFoundError(BAD_REQUEST_MESSAGE_UPDATE);
-//     }
-//     return res.status(OK_CODE).send(wine);
-
-//   } catch(err: any) {
-//     return handleError(err, next);
-//   }
-// }
-
-// const addWineFromFavorite = (req : Request, res: Response, next: NextFunction) => {
-//   findCardByIdAndUpdate(Wine, req, res, '$addToSet', next);
-// }
-// const deleteWineFromFavorite = (req : Request, res: Response, next: NextFunction) => {
-//   findCardByIdAndUpdate(Wine, req, res, '$pull', next);
-// }
 
 export const addWineFromFavorite = (req: Request, res: Response, next: NextFunction) => {
   const { wineId } = req.params;

@@ -37,30 +37,17 @@ export const login = (req: Request, res: Response, next: NextFunction) => {
     .then( user => {
       const token = jwt.sign(
         { _id: user._id },
-        checkJWT!,
-        {expiresIn: '20d'}
+        checkJWT!
       );
       const newUser: IRequestBody = user.toObject();
       delete newUser.password;
-      // return res.status(OK_CODE
-      return res.cookie(
-        'jwt',
-        token,
-        {
-          // httpOnly: true,
-          // sameSite: 'none',
-          // secure: NODE_ENV === 'production',
-          maxAge: 3600000 * 24 * 7,
-        }
-      ).send({newUser, token});
+      return res.status(OK_CODE).send({newUser, token});
     })
     .catch(err => handleError(err, next))
 }
 
 export const getCurrentUser = (req: Request, res: Response, next: NextFunction) => {
   const { _id } = req.user;
-  console.log('id',_id);
-
 
   User.findById(_id)
     .then((user) => {
@@ -73,9 +60,7 @@ export const getCurrentUser = (req: Request, res: Response, next: NextFunction) 
 };
 
 export const logout = (req: Request, res: Response) => {
-  res
-    .clearCookie('jwt')
-    .send({ message: DELETE_MESSAGE });
+  res.send({ message: DELETE_MESSAGE });
 };
 
 export const setUserInfo = (req: Request, res: Response, next: NextFunction) => {
