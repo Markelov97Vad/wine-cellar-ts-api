@@ -40,8 +40,7 @@ export const login = (req: Request, res: Response, next: NextFunction) => {
       const newUser: IRequestBody = user.toObject();
       delete newUser.password;
       return res.status(OK_CODE).send({newUser, token});
-    })
-    .catch(err => handleError(err, next))
+    }).catch(err => handleError(err, next))
 }
 
 export const getCurrentUser = (req: Request, res: Response, next: NextFunction) => {
