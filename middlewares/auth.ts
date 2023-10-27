@@ -4,17 +4,21 @@ import UnauthorizedError from "../errors/UnauthorizedError";
 import { UNAUTHORIZED_AUTH_MESSAGE, checkJWT } from "../utils/config";
 
 
-const auth = (req: any, res: Response, next: NextFunction) => {
-  const token = req.cookies.jwt;
-  if(!token) {
+const auth = (req: Request, res: Response, next: NextFunction) => {
+  const { authorization } = req.headers
+  if (!authorization || !authorization.startsWith('Bearer ')) {
     return next(new UnauthorizedError(UNAUTHORIZED_AUTH_MESSAGE));
   }
+
+  const token = req.headers.authorization?.replace('Bearer ', '');
+
   let payload;
   try {
-    payload = jwt.verify(token, checkJWT!);
+    payload = jwt.verify(token!, checkJWT!);
   } catch(err) {
     return next(new UnauthorizedError(UNAUTHORIZED_AUTH_MESSAGE))
   }
+
   req.user = payload;
 
   return next();

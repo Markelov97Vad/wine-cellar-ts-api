@@ -1,11 +1,13 @@
+require('dotenv').config();
 import express from "express";
 import mongoose from "mongoose";
 import { cors } from 'cors-ts';
-import cookieParser from 'cookie-parser';
 import { centralizedErrorHandler } from "./middlewares/centralizedErrorHandler";
 import { router } from "./routes";
+import productionJwtCheck from "./utils/productionJwtCheck";
 
 const app = express();
+
 const PORT = 3005;
 const DATABASE_URL = 'mongodb://127.0.0.1:27017/winecellardb'
 
@@ -35,7 +37,6 @@ app.use('*', cors(CORS_CONFIG))
 app.use(express.json());
 app.use(express.urlencoded({ extended: true}))
 
-app.use(cookieParser());
 
 app.use(router);
 
@@ -45,6 +46,9 @@ app.listen(PORT, () => {
   if (process.env.NODE_ENV !== 'production') {
     console.log('\x1b[33m%s\x1b[0m', 'Код запущен в режиме разработки');
   }
-  // productionJwtCheck();
+  if (process.env.NODE_ENV === 'production') {
+    console.log('\x1b[33m%s\x1b[0m', 'Режим продакшена');
+  }
+  productionJwtCheck();
   console.log(`Сервер запущен порт ${PORT}`);
 })

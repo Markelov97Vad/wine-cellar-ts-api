@@ -3,7 +3,7 @@ import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import User from "../models/user";
 import { handleError } from "../utils/handleError";
-import { DELETE_MESSAGE, NODE_ENV, NOT_FOUND_MESSAGE, OK_CODE, checkJWT } from "../utils/config";
+import { DELETE_MESSAGE, NOT_FOUND_MESSAGE, OK_CODE, checkJWT } from "../utils/config";
 import NotFoundError from "../errors/NotFoundError";
 
 interface IRequestBody {
@@ -35,24 +35,12 @@ export const login = (req: Request, res: Response, next: NextFunction) => {
     .then( user => {
       const token = jwt.sign(
         { _id: user._id },
-        checkJWT!,
-        {expiresIn: '7d'}
+        checkJWT!
       );
       const newUser: IRequestBody = user.toObject();
       delete newUser.password;
-      return res.cookie(
-        'jwt',
-        token,
-        {
-          httpOnly: true,
-          secure: NODE_ENV === 'production',
-          // sameSite: 'none',
-          // secure: true,
-          maxAge: 3600000 * 24 * 7,
-        }
-      ).send(newUser);
-    })
-    .catch(err => handleError(err, next))
+      return res.status(OK_CODE).send({newUser, token});
+    }).catch(err => handleError(err, next))
 }
 
 export const getCurrentUser = (req: Request, res: Response, next: NextFunction) => {
@@ -69,9 +57,7 @@ export const getCurrentUser = (req: Request, res: Response, next: NextFunction) 
 };
 
 export const logout = (req: Request, res: Response) => {
-  res
-    .clearCookie('jwt')
-    .send({ message: DELETE_MESSAGE });
+  res.send({ message: DELETE_MESSAGE });
 };
 
 export const setUserInfo = (req: Request, res: Response, next: NextFunction) => {
