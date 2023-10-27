@@ -7,12 +7,10 @@ require('dotenv').config();
 const express_1 = __importDefault(require("express"));
 const mongoose_1 = __importDefault(require("mongoose"));
 const cors_ts_1 = require("cors-ts");
-const cookie_parser_1 = __importDefault(require("cookie-parser"));
 const centralizedErrorHandler_1 = require("./middlewares/centralizedErrorHandler");
 const routes_1 = require("./routes");
 const productionJwtCheck_1 = __importDefault(require("./utils/productionJwtCheck"));
 const app = (0, express_1.default)();
-app.use((0, cookie_parser_1.default)());
 const PORT = 3005;
 const DATABASE_URL = 'mongodb://127.0.0.1:27017/winecellardb';
 mongoose_1.default.connect(DATABASE_URL)

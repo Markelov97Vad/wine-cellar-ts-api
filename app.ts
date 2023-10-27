@@ -2,14 +2,11 @@ require('dotenv').config();
 import express from "express";
 import mongoose from "mongoose";
 import { cors } from 'cors-ts';
-import cookieParser from 'cookie-parser';
 import { centralizedErrorHandler } from "./middlewares/centralizedErrorHandler";
 import { router } from "./routes";
 import productionJwtCheck from "./utils/productionJwtCheck";
 
 const app = express();
-
-app.use(cookieParser());
 
 const PORT = 3005;
 const DATABASE_URL = 'mongodb://127.0.0.1:27017/winecellardb'

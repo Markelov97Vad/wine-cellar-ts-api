@@ -1,8 +1,7 @@
 import express from 'express';
 import { wineRouter } from './wines';
 import { userRouter } from './users';
-import { createUser, getCurrentUser, login } from '../controllers/users';
-import auth from '../middlewares/auth';
+import { createUser, login } from '../controllers/users';
 
 const router = express.Router();
 

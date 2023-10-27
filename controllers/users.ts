@@ -12,8 +12,6 @@ interface IRequestBody {
   password?: string;
 }
 
-const { NODE_ENV } = process.env;
-
 export const createUser = (req : Request, res: Response, next: NextFunction) => {
   const { nameUser, email, password } = req.body;
 
