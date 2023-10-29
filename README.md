@@ -1,4 +1,4 @@
-<h1 align="center">Веб-сайт: "Wine cellar" (Backend)</h1>
+<h1 align="center">Веб-приложение: "Wine cellar" (Backend)</h1>
 
 _____
 
@@ -16,7 +16,7 @@ _____
 </a>
 
 <a name="project-description"><h2>1. Описание проекта</h2></a>
-Backend веб-сайта <a href="https://my-wine-cellar.space/" target="_blank">"Wine cellar"</a>. Создан по принципам архитектурной системы `REST API`, включающий функцию ```CRUD```. Используется фреймворк - <a href="https://expressjs.com/ru/" target="_blank">```Express```</a> и взаимодействие с NoSQL базой данных <a href="https://www.mongodb.com/" target="_blank">`MongoDB`</a>. Описание frontend части вы можете прочитать тут => <a href="https://github.com/Markelov97Vad/wine-cellar-ts#1-описание-проекта" target="_blank">Frontend repository Wine cellar (описание проекта)</a>
+Backend веб-приложения <a href="https://my-wine-cellar.space/" target="_blank">"Wine cellar"</a>. Создан по принципам архитектурной системы `REST API`, включающий функцию ```CRUD```. Используется фреймворк - <a href="https://expressjs.com/ru/" target="_blank">```Express```</a> и взаимодействие с NoSQL базой данных <a href="https://www.mongodb.com/" target="_blank">`MongoDB`</a>. Описание frontend части вы можете прочитать тут => <a href="https://github.com/Markelov97Vad/wine-cellar-ts#1-описание-проекта" target="_blank">Frontend repository Wine cellar (описание проекта)</a>
 
 ____
 
