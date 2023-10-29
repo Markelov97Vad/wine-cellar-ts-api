@@ -36,7 +36,6 @@ const CORS_CONFIG = {
 app.use('*', (0, cors_ts_1.cors)(CORS_CONFIG));
 app.use(express_1.default.json());
 app.use(express_1.default.urlencoded({ extended: true }));
-
 app.use(routes_1.router);
 app.use(centralizedErrorHandler_1.centralizedErrorHandler);
 app.listen(PORT, () => {
