@@ -35,7 +35,8 @@ export const login = (req: Request, res: Response, next: NextFunction) => {
     .then( user => {
       const token = jwt.sign(
         { _id: user._id },
-        checkJWT!
+        checkJWT!,
+        { expiresIn: '365d' },
       );
       const newUser: IRequestBody = user.toObject();
       delete newUser.password;
